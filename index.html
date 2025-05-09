@@ -1,0 +1,294 @@
+`tic-tac-toe.html`
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Tic Tac Toe - Game Seru</title>
+  <style>
+    /* Reset and base styles */
+    * {
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #0f2027;
+      background-image: linear-gradient(135deg, #2c5364 0%, #203a43 50%, #0f2027 100%);
+      color: #f0f3f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 10px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.07);
+      padding: 25px 30px 40px 30px;
+      border-radius: 15px;
+      width: 350px;
+      max-width: 95vw;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    h1 {
+      font-weight: 800;
+      font-size: 2.6rem;
+      margin-bottom: 25px;
+      color: #ff6f91;
+      text-shadow: 0 0 8px #ff6f91;
+      letter-spacing: 2px;
+    }
+
+    /* Board styles */
+    #board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      user-select: none;
+    }
+
+    .cell {
+      background: linear-gradient(145deg, #1a237e, #283593);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+      aspect-ratio: 1 / 1; /* square */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 4.4rem;
+      font-weight: 900;
+      color: #c5cae9;
+      box-shadow:
+        inset 5px 5px 15px #1a237e,
+        inset -5px -5px 15px #3949ab;
+      transition: background-color 0.25s ease, transform 0.15s ease;
+      outline-offset: 3px;
+      outline-color: transparent;
+      outline-style: solid;
+    }
+
+    .cell:hover:not(.x):not(.o) {
+      background-color: #3949ab;
+      transform: scale(1.06);
+      box-shadow:
+        0 0 10px #ff6f91,
+        inset 5px 5px 15px #1a237e,
+        inset -5px -5px 15px #3949ab;
+    }
+
+    .cell:focus-visible {
+      outline-color: #ff6f91;
+      transform: scale(1.1);
+      box-shadow:
+        0 0 14px #ff6f91,
+        inset 5px 5px 15px #1a237e,
+        inset -5px -5px 15px #3949ab;
+    }
+
+    .cell.x {
+      color: #ff6f91;
+      text-shadow: 0 0 8px #ff6f91;
+    }
+
+    .cell.o {
+      color: #86c5da;
+      text-shadow: 0 0 8px #86c5da;
+    }
+
+    .cell.winner {
+      background-color: #ffd54f;
+      color: #3e2723 !important;
+      box-shadow: 0 0 25px #ffeb3b, 0 0 15px #ffeb3b inset;
+      transform: scale(1.12);
+      transition: transform 0.3s ease;
+    }
+
+    /* Status message styling */
+    #status {
+      font-size: 1.3rem;
+      margin: 20px 0 15px 0;
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      color: #f9fbe7;
+      min-height: 30px;
+    }
+
+    /* Reset button style */
+    #resetBtn {
+      background: linear-gradient(135deg, #ff6f91, #ff3d68);
+      border: none;
+      padding: 14px 35px;
+      border-radius: 50px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 5px 15px rgba(255, 63, 111, 0.6);
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+      -webkit-user-select: none;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+    }
+
+    #resetBtn:hover,
+    #resetBtn:focus-visible {
+      background: linear-gradient(135deg, #ff3d68, #ff6f91);
+      box-shadow: 0 7px 20px rgba(255, 63, 111, 0.8);
+      outline: none;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 400px) {
+      .container {
+        width: 95vw;
+        padding: 20px;
+      }
+      h1 {
+        font-size: 2rem;
+      }
+      .cell {
+        font-size: 3.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tic Tac Toe</h1>
+    <div id="board" role="grid" aria-label="Tic Tac Toe board">
+      <div class="cell" data-index="0" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="1" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="2" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="3" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="4" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="5" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="6" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="7" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+      <div class="cell" data-index="8" role="gridcell" aria-label="Kosong" tabindex="0"></div>
+    </div>
+    <div id="status">Giliran: <span id="player" aria-live="polite">X</span></div>
+    <button id="resetBtn" aria-label="Reset permainan">Reset Game</button>
+  </div>
+
+  <script>
+    (() => {
+      const board = document.getElementById('board');
+      const cells = Array.from(document.querySelectorAll('.cell'));
+      const playerSpan = document.getElementById('player');
+      const statusDiv = document.getElementById('status');
+      const resetBtn = document.getElementById('resetBtn');
+
+      let boardState = Array(9).fill('');
+      let currentPlayer = 'X';
+      let gameActive = true;
+
+      const winningConditions = [
+        [0,1,2],
+        [3,4,5],
+        [6,7,8],
+        [0,3,6],
+        [1,4,7],
+        [2,5,8],
+        [0,4,8],
+        [2,4,6]
+      ];
+
+      function handleCellClick(e) {
+        const clickedCell = e.target;
+        const clickedIndex = Number(clickedCell.getAttribute('data-index'));
+        if(boardState[clickedIndex] !== '' || !gameActive) return;
+
+        updateCell(clickedCell, clickedIndex);
+        checkResult();
+      }
+
+      function updateCell(cell, index) {
+        boardState[index] = currentPlayer;
+        cell.textContent = currentPlayer;
+        cell.classList.add(currentPlayer.toLowerCase());
+        cell.setAttribute('aria-label', currentPlayer);
+      }
+
+      function changePlayer() {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        playerSpan.textContent = currentPlayer;
+        statusDiv.textContent = `Giliran: ${currentPlayer}`;
+      }
+
+      function checkResult() {
+        let roundWon = false;
+        for(let condition of winningConditions) {
+          const [a,b,c] = condition;
+          if(boardState[a] && boardState[a] === boardState[b] && boardState[b] === boardState[c]) {
+            roundWon = true;
+            highlightWinner(condition);
+            break;
+          }
+        }
+
+        if(roundWon) {
+          statusDiv.textContent = `Pemenang: ${currentPlayer} 🎉`;
+          gameActive = false;
+          return;
+        }
+
+        if(!boardState.includes('')) {
+          statusDiv.textContent = 'Permainan seri! 🙃';
+          gameActive = false;
+          return;
+        }
+
+        changePlayer();
+      }
+
+      function highlightWinner(condition) {
+        condition.forEach(index => {
+          cells[index].classList.add('winner');
+        });
+      }
+
+      function resetGame() {
+        boardState.fill('');
+        gameActive = true;
+        currentPlayer = 'X';
+        playerSpan.textContent = currentPlayer;
+        statusDiv.textContent = `Giliran: ${currentPlayer}`;
+        cells.forEach(cell => {
+          cell.textContent = '';
+          cell.classList.remove('x', 'o', 'winner');
+          cell.setAttribute('aria-label', 'Kosong');
+        });
+      }
+
+      // Accessibility: allow keyboard interaction on cells
+      cells.forEach(cell => {
+        cell.addEventListener('click', handleCellClick);
+        cell.addEventListener('keydown', e => {
+          if(e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            cell.click();
+          }
+        });
+      });
+
+      resetBtn.addEventListener('click', resetGame);
+    })();
+  </script>
+</body>
+</html>
+</content>
+</create_file>
+```
